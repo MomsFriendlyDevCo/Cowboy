@@ -29,8 +29,11 @@
   },
   "dependencies": {
     "@momsfriendlydevco/joyful": "^1.0.0",
-    "toml": "^3.0.0",
-    "wrangler": "^3.9.1"
+    "toml": "^3.0.0"
+  },
+  "devDependencies": {
+    "@momsfriendlydevco/eslint-config": "^1.0.7",
+    "eslint": "^8.50.0"
   },
   "eslintConfig": {
     "extends": "@momsfriendlydevco",
@@ -42,9 +45,5 @@
       "ecmaVersion": 13,
       "sourceType": "module"
     }
-  },
-  "devDependencies": {
-    "@momsfriendlydevco/eslint-config": "^1.0.7",
-    "eslint": "^8.50.0"
   }
 }
