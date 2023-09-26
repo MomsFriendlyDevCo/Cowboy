@@ -1,0 +1,50 @@
+{
+  "name": "@momsfriendlydevco/cowboy",
+  "version": "1.0.0",
+  "description": "Wrapper around Cloudflare Wrangler to provide common functionality",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "wrangler"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./lib/cowboy.js",
+    "./*": "./lib/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MomsFriendlyDevCo/Cowboy.git"
+  },
+  "author": "Matt Carter <matt@mfdc.biz>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MomsFriendlyDevCo/Cowboy/issues"
+  },
+  "homepage": "https://github.com/MomsFriendlyDevCo/Cowboy#readme",
+  "engineStrict": true,
+  "engines": {
+    "node": ">=16.14.0"
+  },
+  "dependencies": {
+    "@momsfriendlydevco/joyful": "^1.0.0",
+    "toml": "^3.0.0",
+    "wrangler": "^3.9.1"
+  },
+  "eslintConfig": {
+    "extends": "@momsfriendlydevco",
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 13,
+      "sourceType": "module"
+    }
+  },
+  "devDependencies": {
+    "@momsfriendlydevco/eslint-config": "^1.0.7",
+    "eslint": "^8.50.0"
+  }
+}
