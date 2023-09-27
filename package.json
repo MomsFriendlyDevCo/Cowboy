@@ -9,6 +9,11 @@
     "wrangler"
   ],
   "type": "module",
+  "imports": {
+    "#lib/*": "./lib/*.js",
+    "#middleware": "./middleware/index.js",
+    "#middleware/*": "./middleware/*.js"
+  },
   "exports": {
     ".": "./lib/cowboy.js",
     "./*": "./lib/*.js"
