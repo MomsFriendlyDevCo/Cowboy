@@ -25,9 +25,9 @@ import cowboy from '@momsfriendlydevco/cowboy';
 export default cowboy()
 	.use('cors') // Inject CORS functionality in every request
 	.get('/', ()=> ({
-        name: faker.company.name(),
+		name: faker.company.name(),
 		motto: faker.company.catchPhrase(),
-    }))
+	}))
 ```
 
 
@@ -42,25 +42,25 @@ import cowboy from '@momsfriendlydevco/cowboy';
 export default cowboy()
 	.use('cors')
 	.get('/widgets', ()=> // Fetch a list of widgets
-        widgetStore.fetchAll()
+		widgetStore.fetchAll()
 	)
-    .post('/widgets', async (req, res) => { // Create a new widget
+	.post('/widgets', async (req, res) => { // Create a new widget
 		let newWidget = await widgetStore.create(req.body);
 		res.send({id: newWidget.id}); // Explicitly send response
-    })
-    .get('/widgets/:id', // Validate params + fetch an existing widget
+	})
+	.get('/widgets/:id', // Validate params + fetch an existing widget
 		['validateParams', joi => ({ // Use the 'validateParams' middleware with options
 			id: joi.number().required().above(10000).below(99999),
 		})],
-        req => widgetStore.fetch(req.params.id),
-    )
-    .delete('/widgets/:id', // Try to delete a widget
+		req => widgetStore.fetch(req.params.id),
+	)
+	.delete('/widgets/:id', // Try to delete a widget
 		(req, res) => { // Apply custom middleware
 			let isAllowed = await widgetStore.userIsValid(req.headers.auth);
 			if (!isAllowed) return res.sendStatus(403); // Stop bad actors
 		},
 		req => widgetStore.delete(req.params.id)
-    )
+	)
 };
 ```
 
