@@ -7,7 +7,7 @@ Features:
 * Automatic CORS handling
 * Basic router support
 * Express-like `req` + `res` object for routes
-* Built in simple middleware + request validation via [Joi](https://joi.dev)
+* Built in middleware + request validation via [Joi](https://joi.dev)
 * Built-in debug support for testkits + Wrangler
 
 
@@ -242,6 +242,134 @@ Returns a promise.
 | `port`         | `String`   | `8787`        | Host to run Wrangler on                                   |
 | `logLevel`     | `String`   | `'log'`       | Log level to instruct Wrangler to run as                  |
 
+
 CowboyTestkit.stop()
 --------------------
 Terminate any running Wrangler background processes.
+
+
+Middleware
+==========
+Cowboy ships with out-of-the-box middleware.
+Middleware are simple functions which accept the paramters `(req:CowboyRequest, res:CowboyResponse)` and can modify the request, halt output with a call to `res` or perform other Async actions before continuing to the next middleware item.
+
+To use middleware in your routes you can either declare it using `.use(middleware)` - which installs it globally or `.ROUTE(middleware...)` which installs it only for that route.
+
+Middleware can be declared in the following ways:
+
+```javascript
+import cowboy from '@momsfriendlydevco/cowboy';
+
+// Shorthand with defaults - just specify the name
+cowboy()
+	.get('/path',
+		'cors',
+		(req, res) => /* ... */
+	)
+
+// Name + options - specify an array with an optional options object
+cowboy()
+	.get('/path',
+		['cors', {
+			option1: value1,
+			/* ... */
+		}],
+		(req, res) => /* ... */
+	)
+
+
+// Middleware function - include the import
+import cors from '@momsfriendlydevco/cowboy/middleware/cors';
+cowboy()
+	.get('/path',
+		cors({
+			option1: value1,
+			/* ... */
+		}),
+		(req, res) => /* ... */
+	)
+```
+
+
+cors
+----
+Inject simple CORS headers to allow websites to use the endpoint from the browser frontend.
+
+
+validate
+--------
+Validate the incoming `req` object using [Joyful](https://github.com/MomsFriendlyDevCo/Joyful).
+The only argument is the Joyful validator which is run against `req`.
+
+```javascript
+import cowboy from '@momsfriendlydevco/cowboy';
+
+// Shorthand with defaults - just specify the name
+cowboy()
+	.get('/path',
+		['validate', joi => {
+			body: {
+				widget: joi.string().required().valid('froody', 'doodad'),
+				size: joi.number().optional(),
+			},
+		})],
+		(req, res) => /* ... */
+	)
+```
+
+validateBody
+------------
+Shorthand validator which runs validation on the `req.body` parameter only.
+
+
+```javascript
+import cowboy from '@momsfriendlydevco/cowboy';
+
+// Shorthand with defaults - just specify the name
+cowboy()
+	.get('/path',
+		['validateBody', joi => {
+			widget: joi.string().required().valid('froody', 'doodad'),
+			size: joi.number().optional(),
+		})],
+		(req, res) => /* ... */
+	)
+```
+
+
+validateParams
+--------------
+Shorthand validator which runs validation on the `req.params` parameter only.
+
+
+```javascript
+import cowboy from '@momsfriendlydevco/cowboy';
+
+// Shorthand with defaults - just specify the name
+cowboy()
+	.get('/widgets/:id',
+		['validateParams', joi => {
+			id: joi.string().requried(),
+		})],
+		(req, res) => /* ... */
+	)
+```
+
+
+validateQuery
+-------------
+Shorthand validator which runs validation on the `req.query` parameter only.
+
+
+```javascript
+import cowboy from '@momsfriendlydevco/cowboy';
+
+// Shorthand with defaults - just specify the name
+cowboy()
+	.get('/widgets/search',
+		['validateQuery', joi => {
+			q: joi.string().requried(),
+		})],
+		(req, res) => /* ... */
+	)
+```
