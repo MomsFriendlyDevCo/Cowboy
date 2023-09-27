@@ -1,7 +1,7 @@
 {
   "name": "@momsfriendlydevco/cowboy",
   "version": "1.0.0",
-  "description": "Wrapper around Cloudflare Wrangler to provide common functionality",
+  "description": "Wrapper around Cloudflare Wrangler to provide a more Express-like experience",
   "scripts": {
     "lint": "eslint ."
   },
@@ -16,7 +16,9 @@
   },
   "exports": {
     ".": "./lib/cowboy.js",
-    "./*": "./lib/*.js"
+    "./*": "./lib/*.js",
+    "middleware": "./middleware/index.js",
+    "middleware/*": "./middleware/*.js"
   },
   "repository": {
     "type": "git",
@@ -28,9 +30,9 @@
     "url": "https://github.com/MomsFriendlyDevCo/Cowboy/issues"
   },
   "homepage": "https://github.com/MomsFriendlyDevCo/Cowboy#readme",
-  "engineStrict": true,
+  "engineStrict": false,
   "engines": {
-    "node": ">=16.14.0"
+    "node": ">=20.x"
   },
   "dependencies": {
     "@momsfriendlydevco/joyful": "^1.0.0",
