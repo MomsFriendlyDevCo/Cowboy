@@ -17,8 +17,8 @@
   "exports": {
     ".": "./lib/cowboy.js",
     "./*": "./lib/*.js",
-    "middleware": "./middleware/index.js",
-    "middleware/*": "./middleware/*.js"
+    "./middleware": "./middleware/index.js",
+    "./middleware/*": "./middleware/*.js"
   },
   "repository": {
     "type": "git",
