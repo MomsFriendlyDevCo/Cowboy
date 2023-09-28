@@ -1,6 +1,6 @@
 {
   "name": "@momsfriendlydevco/cowboy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wrapper around Cloudflare Wrangler to provide a more Express-like experience",
   "scripts": {
     "lint": "eslint ."
