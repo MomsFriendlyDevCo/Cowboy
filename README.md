@@ -296,10 +296,10 @@ cors
 Inject simple CORS headers to allow websites to use the endpoint from the browser frontend.
 
 
-validate
---------
-Validate the incoming `req` object using [Joyful](https://github.com/MomsFriendlyDevCo/Joyful).
-The only argument is the Joyful validator which is run against `req`.
+validate(key, validator)
+------------------------
+Validate the incoming `req.$KEY` object using [Joyful](https://github.com/MomsFriendlyDevCo/Joyful).
+This function takes two arguments - the `req` subkey to examine and the validation function / object.
 
 ```javascript
 import cowboy from '@momsfriendlydevco/cowboy';
@@ -307,18 +307,16 @@ import cowboy from '@momsfriendlydevco/cowboy';
 // Shorthand with defaults - just specify the name
 cowboy()
 	.get('/path',
-		['validate', joi => {
-			body: {
-				widget: joi.string().required().valid('froody', 'doodad'),
-				size: joi.number().optional(),
-			},
+		['validate', 'body', joi => {
+			widget: joi.string().required().valid('froody', 'doodad'),
+			size: joi.number().optional(),
 		})],
 		(req, res) => /* ... */
 	)
 ```
 
-validateBody
-------------
+validateBody(validator)
+-----------------------
 Shorthand validator which runs validation on the `req.body` parameter only.
 
 
@@ -328,7 +326,7 @@ import cowboy from '@momsfriendlydevco/cowboy';
 // Shorthand with defaults - just specify the name
 cowboy()
 	.get('/path',
-		['validateBody', joi => {
+		['validateBody', joi => ({
 			widget: joi.string().required().valid('froody', 'doodad'),
 			size: joi.number().optional(),
 		})],
@@ -337,8 +335,8 @@ cowboy()
 ```
 
 
-validateParams
---------------
+validateParams(validator)
+-------------------------
 Shorthand validator which runs validation on the `req.params` parameter only.
 
 
@@ -356,8 +354,8 @@ cowboy()
 ```
 
 
-validateQuery
--------------
+validateQuery(validator)
+------------------------
 Shorthand validator which runs validation on the `req.query` parameter only.
 
 

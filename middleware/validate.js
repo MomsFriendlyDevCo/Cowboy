@@ -1,8 +1,10 @@
 import joyful from '@momsfriendlydevco/joyful';
 
-export default function CowboyMiddlewareValidate(validator) {
+export default function CowboyMiddlewareValidate(subkey, validator) {
 	return (req, res) => {
-		let joyfulResult = joyful(req, validator, {throw: false});
+		let joyfulResult = joyful({
+			[subkey]: validator,
+		});
 
 		if (joyfulResult !== true) { // Failed body validation?
 			return res
