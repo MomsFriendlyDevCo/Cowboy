@@ -291,8 +291,8 @@ cowboy()
 ```
 
 
-cors
-----
+cors(options)
+-------------
 Inject simple CORS headers to allow websites to use the endpoint from the browser frontend.
 
 
