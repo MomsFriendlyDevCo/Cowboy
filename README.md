@@ -9,6 +9,7 @@ Features:
 * Express-like `req` + `res` object for routes
 * Built in middleware + request validation via [Joi](https://joi.dev)
 * Built-in debug support for testkits + Wrangler
+* Built-in JSON / Multipart (or FormData) / Plain text decoding and population of `req.body`
 
 
 Examples
