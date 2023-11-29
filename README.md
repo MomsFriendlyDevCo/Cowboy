@@ -45,7 +45,7 @@ export default cowboy()
 	.get('/widgets', ()=> // Fetch a list of widgets
 		widgetStore.fetchAll()
 	)
-	.post('/widgets', async (req, res) => { // Create a new widget
+	.post('/widgets', async (req, res, env) => { // Create a new widget
 		let newWidget = await widgetStore.create(req.body);
 		res.send({id: newWidget.id}); // Explicitly send response
 	})
@@ -56,7 +56,7 @@ export default cowboy()
 		req => widgetStore.fetch(req.params.id),
 	)
 	.delete('/widgets/:id', // Try to delete a widget
-		(req, res) => { // Apply custom middleware
+		(req, res, env) => { // Apply custom middleware
 			let isAllowed = await widgetStore.userIsValid(req.headers.auth);
 			if (!isAllowed) return res.sendStatus(403); // Stop bad actors
 		},
@@ -265,7 +265,7 @@ import cowboy from '@momsfriendlydevco/cowboy';
 cowboy()
 	.get('/path',
 		'cors',
-		(req, res) => /* ... */
+		(req, res, env) => /* ... */
 	)
 
 // Name + options - specify an array with an optional options object
@@ -275,7 +275,7 @@ cowboy()
 			option1: value1,
 			/* ... */
 		}],
-		(req, res) => /* ... */
+		(req, res, env) => /* ... */
 	)
 
 
@@ -287,7 +287,7 @@ cowboy()
 			option1: value1,
 			/* ... */
 		}),
-		(req, res) => /* ... */
+		(req, res, env) => /* ... */
 	)
 ```
 
@@ -312,7 +312,7 @@ cowboy()
 			widget: joi.string().required().valid('froody', 'doodad'),
 			size: joi.number().optional(),
 		})],
-		(req, res) => /* ... */
+		(req, res, env) => /* ... */
 	)
 ```
 
@@ -331,7 +331,7 @@ cowboy()
 			widget: joi.string().required().valid('froody', 'doodad'),
 			size: joi.number().optional(),
 		})],
-		(req, res) => /* ... */
+		(req, res, env) => /* ... */
 	)
 ```
 
@@ -348,9 +348,9 @@ import cowboy from '@momsfriendlydevco/cowboy';
 cowboy()
 	.get('/widgets/:id',
 		['validateParams', joi => {
-			id: joi.string().requried(),
+			id: joi.string().required(),
 		})],
-		(req, res) => /* ... */
+		(req, res, env) => /* ... */
 	)
 ```
 
@@ -369,6 +369,6 @@ cowboy()
 		['validateQuery', joi => {
 			q: joi.string().requried(),
 		})],
-		(req, res) => /* ... */
+		(req, res, env) => /* ... */
 	)
 ```
