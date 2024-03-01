@@ -106,7 +106,7 @@ let router = new Cowboy()
 Notes:
 * All middleware items are called in sequence - and are async waited-on)
 * If any middleware functions fail the entire chain aborts with an error
-* All middleware functions are called as `(CowboyRequest, CowboyResponse)`
+* All middleware functions are called as `(CowboyRequest, CowboyResponse, Env)`
 * If any middleware functions call `res.end()` (or any of its automatic methods like `res.send()` / `res.sendStatus()`) the chain also aborts successfully
 * If the last middleware function returns a non response object - i.e. the function didn't call `res.send()` its assumed to be a valid output and is automatically wrapped
 
