@@ -335,6 +335,10 @@ cowboy()
 	)
 ```
 
+validateHeaders(validator)
+-----------------------
+Shorthand validator which runs validation on the `req.headers` parameter only.
+
 
 validateParams(validator)
 -------------------------
