@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@momsfriendlydevco/joyful": "^1.0.1",
-    "@momsfriendlydevco/path-match": "^1.0.0",
+    "@momsfriendlydevco/path-match": "^1.1.0",
     "toml": "^3.0.0"
   },
   "devDependencies": {
