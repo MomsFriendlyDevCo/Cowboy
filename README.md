@@ -136,6 +136,11 @@ This function will, in order:
 6. Return the final response - if it the function did not already explicitly do so
 
 
+Cowboy.proxy(path, request, env)
+--------------------------------
+Forward from one route to another as if the second route was called first.
+
+
 CowboyRequest
 -------------
 ```javascript
@@ -376,3 +381,8 @@ cowboy()
 		(req, res, env) => /* ... */
 	)
 ```
+
+
+parseJwt()
+----------
+Parse the incoming request as a JWT string and decode its contents into `req.body`.
