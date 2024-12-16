@@ -63,6 +63,21 @@ export default cowboy()
 		req => widgetStore.delete(req.params.id)
 	)
 };
+
+
+Cron schedule handling
+----------------------
+Cron scheduling is a little basic at the moment but likely to improve in the future.
+To set up a Cron handler simply install it by calling `.schedule(callback)`:
+
+```javascript
+import cowboy from '@momsfriendlydevco/cowboy';
+
+export default cowboy()
+	.schedule(async (event, env, ctx) => {
+		// Handle cron code here
+	})
+```
 ```
 
 Debugging
@@ -139,6 +154,11 @@ This function will, in order:
 Cowboy.proxy(path, request, env)
 --------------------------------
 Forward from one route to another as if the second route was called first.
+
+
+Cowboy.schedule(callback)
+-------------------------
+Install a scheduled Cron handler function.
 
 
 CowboyRequest
