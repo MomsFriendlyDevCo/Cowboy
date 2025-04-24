@@ -1,4 +1,5 @@
 import cors from '#middleware/cors';
+import devOnly from '#middleware/devOnly';
 import parseJwt from '#middleware/parseJwt';
 import validate from '#middleware/validate';
 import validateBody from '#middleware/validateBody';
@@ -8,6 +9,7 @@ import validateQuery from '#middleware/validateQuery';
 
 export default {
 	cors,
+	devOnly,
 	parseJwt,
 	validate,
 	validateBody,

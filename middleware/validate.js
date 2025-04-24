@@ -5,7 +5,7 @@ import joyful from '@momsfriendlydevco/joyful';
 *
 * @param {String} subkey The subkey to run against
 * @param {Function|Object} Callback to use with Joyful to validate with
-* @returns {Void} Either a successful middleware cycle (if validatio succeeds) or a call to `res.status(400)` if failed
+* @returns {Void} Either a successful middleware cycle (if validation succeeds) or a call to `res.status(400)` if failed
 */
 export default function CowboyMiddlewareValidate(subkey, validator) {
 	return (req, res) => {

@@ -322,6 +322,11 @@ cors(options)
 Inject simple CORS headers to allow websites to use the endpoint from the browser frontend.
 
 
+devOnly()
+---------
+Allow access to the endpoint ONLY if Cloudflare is running in local development mode. Throws a 403 otherwise.
+
+
 validate(key, validator)
 ------------------------
 Validate the incoming `req.$KEY` object using [Joyful](https://github.com/MomsFriendlyDevCo/Joyful).
