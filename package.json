@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "description": "Wrapper around Cloudflare Wrangler to provide a more Express-like experience",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint"
   },
   "keywords": [
     "wrangler"
