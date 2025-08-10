@@ -2,26 +2,30 @@
 * Register a generic middleware to handle CORS requests
 *
 * @param {Object} [options] Additional options to mutate behaviour
-* @param {Boolean} [options.attachOptions=true] Attach an `options` method against all routes that don't already have one to pass the CORS pre-flight check
-* @param {Object} [options.headers] Generic CORS headers to inject
+* @param {Boolean} [options.attachOptions=true] Automatically attach an `OPTIONS` method against all routes that don't already have one to pass the CORS pre-flight check
+* @param {String} [options.origin='*'] Origin URL to allow
+* @param {String} [options.headers='*'] Headers to allow
+* @param {Array<String>} [options.methods=['GET','POST','OPTIONS']] Allowable HTTP methods to add CORS to
 *
 * @returns {CowboyMiddleware}
 */
 export default function CowboyMiddlewareCORS(options) {
 	let settings = {
 		attachOptions: true,
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-			'Access-Control-Allow-Headers': '*',
-			'Content-Type': 'application/json;charset=UTF-8',
-		},
+		origin: '*',
+		headers: '*',
+		methods: ['GET', 'POST', 'OPTIONS'],
 		...options,
 	};
 
 	return (req, res) => {
 		// Always inject CORS headers
-		res.set(settings.headers);
+		res.set({
+			'Access-Control-Allow-Origin': settings.origin,
+			'Access-Control-Allow-Methods': settings.methods.join(', '),
+			'Access-Control-Allow-Headers': settings.headers,
+			'Content-Type': 'application/json;charset=UTF-8',
+		});
 
 		// Inject various OPTIONS endpoints for CORS pre-flight
 		if (settings.attachOptions && !req.router.loadedCors) {
