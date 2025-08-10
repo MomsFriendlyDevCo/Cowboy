@@ -40,18 +40,7 @@
     "toml": "^3.0.0"
   },
   "devDependencies": {
-    "@momsfriendlydevco/eslint-config": "^1.0.7",
-    "eslint": "^8.51.0"
-  },
-  "eslintConfig": {
-    "extends": "@momsfriendlydevco",
-    "env": {
-      "es6": true,
-      "node": true
-    },
-    "parserOptions": {
-      "ecmaVersion": 13,
-      "sourceType": "module"
-    }
+    "@momsfriendlydevco/eslint-config": "^2.3.1",
+    "eslint": "^9.33.0"
   }
 }
