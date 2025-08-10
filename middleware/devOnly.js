@@ -6,7 +6,7 @@
 */
 export default function CowboyMiddlewareDevOnly() {
 	return (req, res, env) => {
-		const isDev = self.ENVIRONMENT === 'development';
+		const isDev = env.ENVIRONMENT === 'development';
 
 		if (!isDev) return res
 			.status(403)
