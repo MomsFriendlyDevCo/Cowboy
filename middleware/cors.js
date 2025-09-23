@@ -6,6 +6,7 @@
 * @param {String} [options.origin='*'] Origin URL to allow
 * @param {String} [options.headers='*'] Headers to allow
 * @param {Array<String>} [options.methods=['GET','POST','OPTIONS']] Allowable HTTP methods to add CORS to
+* @param {Boolean} [options.debug=false] Output what endpoints have had CORS automatically attached
 *
 * @returns {CowboyMiddleware}
 */
@@ -15,6 +16,7 @@ export default function CowboyMiddlewareCORS(options) {
 		origin: '*',
 		headers: '*',
 		methods: ['GET', 'POST', 'OPTIONS'],
+		debug: false,
 		...options,
 	};
 
@@ -32,11 +34,13 @@ export default function CowboyMiddlewareCORS(options) {
 			req.router.routes
 				.filter(route => !route.methods.includes('OPTIONS'))
 				.forEach(route =>
-					route.paths.forEach(path =>
+					route.paths.forEach(path => {
+						if (settings.debug) console.log('[Cowboy/CORS middleware] Attach CORS to', path);
+
 						req.router.options(path, (req, res) =>
 							res.sendStatus(200)
 						)
-					)
+					})
 				);
 
 			req.router.loadedCors = true; // Mark we've already done this so we don't keep tweaking the router
