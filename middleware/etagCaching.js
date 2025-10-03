@@ -41,7 +41,6 @@ export default function CowboyEtagCaching(options) {
 				url: req.path,
 				body: res.body,
 			};
-			console.log(JSON.stringify({payload}, null, '\t'));
 			return payload;
 		},
 		textEncoder: new TextEncoder(),
