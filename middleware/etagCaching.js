@@ -48,7 +48,7 @@ export default function CowboyEtagCaching(options) {
 			let hashArray = Array.from(new Uint8Array(hashBuffer));
 			return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 		},
-		debug: true,
+		debug: false,
 		...options,
 	};
 
