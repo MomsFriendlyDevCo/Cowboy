@@ -195,6 +195,7 @@ This object contains various Express-like utility functions:
 | `end(data?, end=true)`              | Set the output response and optionally end the session   |
 | `sendStatus(code, data?, end=true)` | Send a HTTP response code and optionally end the session |
 | `status(code)`                      | Set the HTTP response code                               |
+| `beforeServe(callback)`             | Queue a middleware callback before `toCloudflareResponse()` |
 | `toCloudflareResponse()`            | Return the equivelent CloudflareResponse object          |
 
 All functions (except `toCloudflareResponse()`) are chainable and return the original `CowboyResponse` instance.
@@ -326,6 +327,12 @@ Inject simple CORS headers to allow websites to use the endpoint from the browse
 devOnly()
 ---------
 Allow access to the endpoint ONLY if Cloudflare is running in local development mode. Throws a 403 otherwise.
+
+
+etagCaching(options)
+--------------------
+Return a `ETag` header with every response return 304 responses if the `If-None-Match` header is the same value.
+This significantly reduces bandwidth if the same output result would be returned should the client include that header.
 
 
 validate(key, validator)

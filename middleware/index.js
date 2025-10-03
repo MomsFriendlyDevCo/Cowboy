@@ -1,5 +1,6 @@
 import cors from '#middleware/cors';
 import devOnly from '#middleware/devOnly';
+import etagCaching from '#middleware/etagCaching';
 import parseJwt from '#middleware/parseJwt';
 import validate from '#middleware/validate';
 import validateBody from '#middleware/validateBody';
@@ -10,6 +11,7 @@ import validateQuery from '#middleware/validateQuery';
 export default {
 	cors,
 	devOnly,
+	etagCaching,
 	parseJwt,
 	validate,
 	validateBody,
