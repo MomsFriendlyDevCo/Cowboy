@@ -28,7 +28,11 @@ function sortKeys(o) {
 export default function CowboyEtagCaching(options) {
 	let settings = {
 		enabled(req, settings) { // eslint-disable-line no-unused-vars
-			return (req.method == 'GET');
+			return (
+				req.method == 'GET' // Method must be GET
+				&& !req.headers['cache-control'] // No cache control headers
+				&& !req.headers['pragma'] // No pragma control headers
+			);
 		},
 		payload(req, res, settings) { // eslint-disable-line no-unused-vars
 			let payload = {
