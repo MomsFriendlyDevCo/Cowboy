@@ -44,7 +44,7 @@ export default function CowboyEtagCaching(options) {
 		},
 		textEncoder: new TextEncoder(),
 		async hasher(obj, settings) {
-			let text = JSON.stringify(sortKeys(obj));
+			let text = typeof obj == 'string' ? obj : JSON.stringify(sortKeys(obj));
 			let data = settings.textEncoder.encode(text);
 			let hashBuffer = await crypto.subtle.digest('SHA-256', data);
 			let hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -73,8 +73,9 @@ export default function CowboyEtagCaching(options) {
 
 		// Queue up interceptor to handle the eventual middleware chain output
 		res.beforeServe(async ()=> {
-			if (typeof res.data == 'object') {
-				settings.debug('Refusing to cache - res.data is not an object');
+			let dataType = typeof res.body;
+			if (!['object', 'string'].includes(dataType)) {
+				settings.debug(`Refusing to cache - res.body data type is "${dataType}" and not a POJO or plain String`);
 				return;
 			}
 
