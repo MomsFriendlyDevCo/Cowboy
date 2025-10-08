@@ -35,13 +35,12 @@ export default function CowboyEtagCaching(options) {
 			);
 		},
 		payload(req, res, settings) { // eslint-disable-line no-unused-vars
-			let payload = {
+			return {
 				method: req.method,
 				query: req.query,
 				url: req.path,
 				body: res.body,
 			};
-			return payload;
 		},
 		textEncoder: new TextEncoder(),
 		async hasher(obj, settings) {
