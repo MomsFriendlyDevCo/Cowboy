@@ -13,7 +13,7 @@ function sortKeys(o) {
 
 
 /**
-* Cowboy middleware which will return a 304 if the incoming eTag matches the hash of the last identical response
+* Cowboy middleware which will return a 304 if the incoming eTag matches the hash of the last identical payload response
 * If hitting the same endpoints over and over this can significantly improve response times
 *
 * @param {Object} [options] Additional options to mutate behaviour
@@ -72,7 +72,7 @@ export default function CowboyEtagCaching(options) {
 
 		settings.debug('Enabled for request', req.path);
 
-		// Queue up interceptor before responding to handle the output
+		// Queue up interceptor to handle the eventual middleware chain output
 		res.beforeServe(async ()=> {
 			if (typeof res.data == 'object') {
 				settings.debug('Refusing to cache - res.data is not an object');
