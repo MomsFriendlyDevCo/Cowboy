@@ -1,4 +1,10 @@
-// Utility: sortKeys(o) - Re-sort a JSON object so that keys are in a predictable order {{{
+// Utility: sortKeys(o) - Re-compose a JSON object so that keys are in a predictable order {{{
+/**
+* Re-compose a JSON object so that keys are in a predictable order
+*
+* @param {Object} o Incoming object/value to resort
+* @returns {Object} The incoming object, shallow copied into another with sorted keys
+*/
 function sortKeys(o) {
 	if (typeof o !== 'object' || o === null) return o;
 	if (Array.isArray(o)) return o.map(sortKeys);
@@ -25,7 +31,7 @@ function sortKeys(o) {
 *
 * @returns {CowboyMiddleware} A CowboyMiddleware compatible function - this can be used on individual requests or globally
 */
-export default function CowboyEtagCaching(options) {
+export default function CowboyMiddlewareEtagCaching(options) {
 	let settings = {
 		enabled(req, settings) { // eslint-disable-line no-unused-vars
 			return (
