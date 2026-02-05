@@ -1,3 +1,4 @@
+import apiTally from '#middleware/apiTally';
 import cors from '#middleware/cors';
 import devOnly from '#middleware/devOnly';
 import etagCaching from '#middleware/etagCaching';
@@ -9,6 +10,7 @@ import validateParams from '#middleware/validateParams';
 import validateQuery from '#middleware/validateQuery';
 
 export default {
+	apiTally,
 	cors,
 	devOnly,
 	etagCaching,

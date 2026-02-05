@@ -1,0 +1,166 @@
+/**
+* APITally LogPush output support
+* This middleware outputs a Base64 + Gziped trace for digest by the remote APITally.io service
+*
+* @param {Object} [options] Additional options to mutate behaviour
+* @param {Boolean|Function} [options.enabled] Whether to perform an output action, defaults to being enabled only if we are likely running within a Cloudflare Co-location
+* @param {String} [options.pathPrefix=''] Prefix to prepend to all endpoint paths
+* @param {String} [options.client='js-serverless:hono'] The client string to use when reporting to APITally
+* @param {String} [options.clientVersion] The client version string to use when reporting to APITally
+* @param {Set<String>} [options.logMethods] Methods whitelist to use when computing the endpoints to APITally
+*
+* @returns {CowboyMiddleware}
+*/
+export default function CowboyMiddlewareApiTally(options) {
+	let settings = {
+		enabled(req, res) {
+			return !! req.cfReq.cf?.colo; // Only run if we have a Cloudflare data center allocated - otherwise assume local execution
+		},
+		pathPrefix: '',
+		client: 'js-serverless:hono',
+		clientVersion: '1.0.0',
+		logMethods: new Set([
+			'DELETE',
+			'GET',
+			'PATCH',
+			'POST',
+			'PUT',
+		]),
+		...options,
+	};
+
+	let isFirstRequest = true;
+
+	return (req, res) => {
+		req.startTime = Date.now();
+
+		// Queue up callback function to call after handling the request
+		res.beforeServe(async (req, res) => {
+			if ( // Skip adding APITally output if we're not enabled
+				!settings.enabled
+				|| (
+					typeof settings.enabled == 'function'
+					&& !(await settings.enabled(req, res))
+				)
+			) return;
+
+			/**
+			* Actual output data structure to encode + output
+			* This is copied from https://github.com/apitally/apitally-js-serverless/blob/main/src/hono/middleware.ts
+			* @type {Object}
+			*/
+			let outputData = {
+				instanceUuid: crypto.randomUUID(), // NOTE: Docs say required string but composer returns undefined outside of isFirstRequest
+				requestUuid: crypto.randomUUID(),
+				consumer: undefined, // FIXME: No idea what this is but its optional anyway
+				startup: isFirstRequest ? {
+					paths: res.cowboy.routes
+						.flatMap(route =>
+							route.methods
+								.filter(method => settings.logMethods.has(method))
+								.map(method =>
+									route.matcher.pathStrings
+										.filter(path => path.startsWith('/')) // Exclude complex RegEx matches
+										.map(path => ({
+											method,
+											path: settings.pathPrefix + path,
+										}))
+								)
+						),
+					client: settings.client,
+					versions: {
+						'@apitally/serverless': settings.clientVersion,
+					},
+				} : undefined,
+				request: {
+					path: req.cfReq.routePath,
+					headers: Object.entries(req.headers),
+					size: req.cfReq.headers.has('content-length') ? Number.parseInt(req.cfReq.headers.get('content-length')) : undefined,
+					consumer: undefined, // FIXME: Where does this come from type is optional string
+					body: bytesToBase64(pojoToUint8Array(req.body)),
+				},
+				response: {
+					responseTime: Math.floor((Date.now() - req.startTime) / 1000),
+					headers: Object.entries(res.headers),
+					size:
+						res.headers['Content-Type'] == 'application/json' ? JSON.stringify(res.body).length
+						: res.headers['Content-Type'].startsWith('text/')  ? res.body.length
+						: undefined,
+					body:
+						res.headers['Content-Type'] == 'application/json' ? bytesToBase64(pojoToUint8Array(res.body))
+						: res.headers['Content-Type'].startsWith('text/') ? new TextEncoder().encode(res.body)
+						: undefined,
+				},
+				validationErrors: undefined, // FIXME: Populate somehow, type is ValidationError[]
+				exception: undefined, // FIXME: Populate somehow when erroring out, type struct below
+					/*
+					res.code === 500 && res.error
+						? {
+								type: res.error.name, // FIXME: string
+								msg: truncateExceptionMessage(res.error.message), // FIXME: string
+								stackTrace: truncateExceptionStackTrace(res.error.stack ?? ""), // FIXME: string
+							}
+						: undefined,
+					*/
+			};
+
+			// console.log('APITally data', JSON.stringify(outputData, null, '\t'));
+
+			console.log('apitally:' + await gzipBase64(JSON.stringify(outputData)));
+			if (isFirstRequest) isFirstRequest = false; // Disable need for more endpoint reporting after the first report
+		});
+	};
+}
+
+
+// Utilify functions taken from source {{{
+
+/**
+* Convert a standard JS POJO into a Uint8Array type
+*
+* @param {Object|Array} obj Input object to work with
+* @returns {Uint8Array} Output Uint8Array type
+*/
+function pojoToUint8Array(obj) {
+	return new TextEncoder().encode(
+		JSON.stringify(obj)
+	);
+}
+
+/**
+* Convert an incoming Uint8Array into Base64 encoding
+*
+* @see https://github.com/apitally/apitally-js-serverless/blob/main/src/common/bytes.ts
+*
+* @param {Uint8Array} bytes The incoming byte stream to convert
+* @returns {String} Base64 Encoded content
+*/
+function bytesToBase64(bytes) {
+	/* eslint-disable unicorn/numeric-separators-style, unicorn/prefer-code-point */
+	const chunks = [];
+	const chunkSize = 0x1000; // 4096 bytes
+	for (let i = 0; i < bytes.length; i += chunkSize) {
+		chunks.push(String.fromCharCode(...bytes.subarray(i, i + chunkSize)));
+	}
+	return btoa(chunks.join(""));
+}
+
+
+/**
+* Encode a given input string via Gzip
+*
+* @param {String} json The input string to encode
+* @returns {Uint8Array} The encoded input
+*/
+async function gzipBase64(json) {
+	const encoder = new TextEncoder();
+	const gzipStream = new CompressionStream("gzip");
+	const writer = gzipStream.writable.getWriter();
+	writer.write(encoder.encode(json));
+	writer.close();
+
+	const compressed = await new Response(gzipStream.readable).arrayBuffer();
+	return bytesToBase64(new Uint8Array(compressed));
+}
+
+// }}}
