@@ -108,8 +108,8 @@ import {Cowboy} from '@momsfriendlydevco/cowboy';
 The instance created by `cowboy()`.
 
 
-Cowboy.delete(path) / .get() / .head() / .post() / .put() / .options()
-----------------------------------------------------------------------
+Cowboy.delete(path) / .all() / .get() / .head() / .post() / .put() / .options()
+-------------------------------------------------------------------------------
 Queue up a route with a given path.
 
 Each component is made up of a path + any number of middleware handlers.
