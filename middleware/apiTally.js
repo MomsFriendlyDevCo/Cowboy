@@ -73,7 +73,7 @@ export default function CowboyMiddlewareApiTally(options) {
 					},
 				} : undefined,
 				request: {
-					path: req.cfReq.routePath,
+					path: req.path,
 					headers: Object.entries(req.headers),
 					size: req.cfReq.headers.has('content-length') ? Number.parseInt(req.cfReq.headers.get('content-length')) : undefined,
 					consumer: undefined, // FIXME: Where does this come from type is optional string
