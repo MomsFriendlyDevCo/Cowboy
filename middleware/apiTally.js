@@ -30,6 +30,7 @@ export default function CowboyMiddlewareApiTally(options) {
 	};
 
 	let isFirstRequest = true;
+	let instanceUuid;
 
 	return (req, res) => {
 		req.startTime = Date.now();
@@ -44,16 +45,21 @@ export default function CowboyMiddlewareApiTally(options) {
 				)
 			) return;
 
+			if (!instanceUuid) { // We don't have an instanceUuid populated yet - compute one from the Cloudflare Ray ID
+				instanceUuid = req.headers['cf-ray'].padStart(32, '0').slice(0, 32);
+				instanceUuid = `${instanceUuid.slice(0, 8)}-${instanceUuid.slice(8, 12)}-${instanceUuid.slice(12, 16)}-${instanceUuid.slice(16, 20)}-${instanceUuid.slice(20, 32)}`;
+			}
+
 			/**
 			* Actual output data structure to encode + output
 			* This is copied from https://github.com/apitally/apitally-js-serverless/blob/main/src/hono/middleware.ts
 			* @type {Object}
 			*/
 			let outputData = {
-				instanceUuid: crypto.randomUUID(), // NOTE: Docs say required string but composer returns undefined outside of isFirstRequest
+				instanceUuid,
 				requestUuid: crypto.randomUUID(),
 				consumer: undefined, // FIXME: No idea what this is but its optional anyway
-				startup: isFirstRequest ? {
+				startup: isFirstRequest ? { // Compute + send paths for first session hit
 					paths: res.cowboy.routes
 						.flatMap(route =>
 							route.methods
@@ -107,7 +113,7 @@ export default function CowboyMiddlewareApiTally(options) {
 			// console.log('APITally data', JSON.stringify(outputData, null, '\t'));
 
 			console.log('apitally:' + await gzipBase64(JSON.stringify(outputData)));
-			if (isFirstRequest) isFirstRequest = false; // Disable need for more endpoint reporting after the first report
+			isFirstRequest = false; // Disable need for more endpoint reporting after the first report
 		});
 	};
 }
