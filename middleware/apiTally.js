@@ -89,12 +89,12 @@ export default function CowboyMiddlewareApiTally(options) {
 					responseTime: Math.floor((Date.now() - req.startTime) / 1000),
 					headers: Object.entries(res.headers),
 					size:
-						res.headers['Content-Type'] == 'application/json' ? JSON.stringify(res.body).length
-						: res.headers['Content-Type'].startsWith('text/')  ? res.body.length
+						res.headers['Content-Type']?.startsWith('application/json') ? JSON.stringify(res.body).length
+						: res.headers['Content-Type']?.startsWith('text/')  ? res.body.length
 						: undefined,
 					body:
-						res.headers['Content-Type'] == 'application/json' ? bytesToBase64(pojoToUint8Array(res.body))
-						: res.headers['Content-Type'].startsWith('text/') ? new TextEncoder().encode(res.body)
+						res.headers['Content-Type']?.startsWith('application/json') ? bytesToBase64(pojoToUint8Array(res.body))
+						: res.headers['Content-Type']?.startsWith('text/') ? new TextEncoder().encode(res.body)
 						: undefined,
 				},
 				validationErrors: undefined, // FIXME: Populate somehow, type is ValidationError[]
