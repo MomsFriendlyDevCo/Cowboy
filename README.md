@@ -196,6 +196,7 @@ This object contains various Express-like utility functions:
 | `sendStatus(code, data?, end=true)` | Send a HTTP response code and optionally end the session |
 | `status(code)`                      | Set the HTTP response code                               |
 | `beforeServe(callback)`             | Queue a middleware callback before `toCloudflareResponse()` |
+| `afterError(callback)`              | Queue an error handler callback                          |
 | `toCloudflareResponse()`            | Return the equivelent CloudflareResponse object          |
 
 All functions (except `toCloudflareResponse()`) are chainable and return the original `CowboyResponse` instance.
