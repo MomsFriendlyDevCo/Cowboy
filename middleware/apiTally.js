@@ -35,8 +35,15 @@ export default function CowboyMiddlewareApiTally(options) {
 	return (req, res) => {
 		req.startTime = Date.now();
 
-		// Queue up callback function to call after handling the request
-		res.beforeServe(async (req, res) => {
+		/**
+		* Main APITally handling function
+		* This gets glued as `res.apiTallyOutput()`
+		*
+		* @param {CowboyRequest} req The request object to examine
+		* @param {CowboyResponse} res The response object to examine
+		* @param {Error} [err] Optional error content to include
+		*/
+		res.apiTallyOutput = async (req, res, err) => {
 			if ( // Skip adding APITally output if we're not enabled
 				!settings.enabled
 				|| (
@@ -89,8 +96,8 @@ export default function CowboyMiddlewareApiTally(options) {
 					responseTime: Math.floor((Date.now() - req.startTime) / 1000),
 					headers: Object.entries(res.headers),
 					size:
-						res.headers['Content-Type']?.startsWith('application/json') ? JSON.stringify(res.body).length
-						: res.headers['Content-Type']?.startsWith('text/')  ? res.body.length
+						res.headers['Content-Type']?.startsWith('application/json') ? JSON.stringify(res.body)?.length ?? 0
+						: res.headers['Content-Type']?.startsWith('text/')  && res.body?.length ? res.body.length
 						: undefined,
 					body:
 						res.headers['Content-Type']?.startsWith('application/json') ? bytesToBase64(pojoToUint8Array(res.body))
@@ -98,23 +105,22 @@ export default function CowboyMiddlewareApiTally(options) {
 						: undefined,
 				},
 				validationErrors: undefined, // FIXME: Populate somehow, type is ValidationError[]
-				exception: undefined, // FIXME: Populate somehow when erroring out, type struct below
-					/*
-					res.code === 500 && res.error
-						? {
-								type: res.error.name, // FIXME: string
-								msg: truncateExceptionMessage(res.error.message), // FIXME: string
-								stackTrace: truncateExceptionStackTrace(res.error.stack ?? ""), // FIXME: string
-							}
-						: undefined,
-					*/
+				exception: err ? { // Optionally splat error if we have one
+					type: err.name,
+					msg: err.message,
+					stackTrace: err.stack ?? '',
+				} : undefined,
 			};
 
 			// console.log('APITally data', JSON.stringify(outputData, null, '\t'));
 
 			console.log('apitally:' + await gzipBase64(JSON.stringify(outputData)));
 			isFirstRequest = false; // Disable need for more endpoint reporting after the first report
-		});
+		};
+
+		// Queue up callback function to call after handling the request
+		res.beforeServe(async (req, res) => res.apiTallyOutput(req, res));
+		res.afterError(async (req, res, err) => res.apiTallyOutput(req, res, err));
 	};
 }
 
