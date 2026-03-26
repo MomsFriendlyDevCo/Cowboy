@@ -4,7 +4,7 @@
 * @param {Object} [options] Additional options to mutate behaviour
 * @param {Boolean} [options.attachOptions=true] Automatically attach an `OPTIONS` method against all routes that don't already have one to pass the CORS pre-flight check
 * @param {String} [options.origin='*'] Origin URL to allow
-* @param {String} [options.headers='*'] Headers to allow
+* @param {String} [options.headers='*, Authorization'] Headers to allow
 * @param {Array<String>} [options.methods=['GET','POST','OPTIONS']] Allowable HTTP methods to add CORS to
 * @param {Boolean} [options.debug=false] Output what endpoints have had CORS automatically attached
 *
@@ -14,7 +14,7 @@ export default function CowboyMiddlewareCORS(options) {
 	let settings = {
 		attachOptions: true,
 		origin: '*',
-		headers: '*',
+		headers: '*, Authorization',
 		methods: ['GET', 'POST', 'OPTIONS'],
 		debug: false,
 		...options,
