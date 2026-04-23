@@ -13,7 +13,7 @@
 */
 export default function CowboyMiddlewareApiTally(options) {
 	let settings = {
-		enabled(req, res) {
+		enabled(req) {
 			return !! req.cfReq.cf?.colo; // Only run if we have a Cloudflare data center allocated - otherwise assume local execution
 		},
 		pathPrefix: '',
