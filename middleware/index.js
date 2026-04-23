@@ -1,4 +1,5 @@
 import apiTally from '#middleware/apiTally';
+import conditional from '#middleware/conditional';
 import cors from '#middleware/cors';
 import devOnly from '#middleware/devOnly';
 import etagCaching from '#middleware/etagCaching';
@@ -11,6 +12,7 @@ import validateQuery from '#middleware/validateQuery';
 
 export default {
 	apiTally,
+	conditional,
 	cors,
 	devOnly,
 	etagCaching,

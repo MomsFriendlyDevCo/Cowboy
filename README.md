@@ -320,6 +320,11 @@ cowboy()
 ```
 
 
+conditional(options)
+--------------------
+Selectively include other middleware based on a callback.
+
+
 cors(options)
 -------------
 Inject simple CORS headers to allow websites to use the endpoint from the browser frontend.
