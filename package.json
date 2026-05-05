@@ -35,9 +35,9 @@
     "node": ">=20.x"
   },
   "dependencies": {
-    "@momsfriendlydevco/joyful": "^1.0.1",
+    "@momsfriendlydevco/joyful": "^1.2.0",
     "@momsfriendlydevco/path-match": "^1.1.0",
-    "toml": "^3.0.0"
+    "toml": "^4.1.1"
   },
   "devDependencies": {
     "@momsfriendlydevco/eslint-config": "^2.4.2",
