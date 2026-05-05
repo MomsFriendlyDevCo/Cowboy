@@ -9,7 +9,7 @@ function sortKeys(o) {
 	if (typeof o !== 'object' || o === null) return o;
 	if (Array.isArray(o)) return o.map(sortKeys);
 	return Object.keys(o)
-		.sort()
+		.sort() // eslint-disable-line unicorn/no-array-sort
 		.reduce((acc, key) => {
 			acc[key] = sortKeys(o[key]);
 			return acc;
